@@ -106,7 +106,7 @@ stages:
   # ==========================================
   - stage: Approval
     displayName: 'Aprobar'
-    dependsOn: CI
+    dependsOn: Auditoria
     condition: succeeded()
     jobs:
       - job: manual_gate
