@@ -86,7 +86,23 @@ stages:
             displayName: 'Publicar Cobertura en Azure DevOps'
 
   # ==========================================
-  # STAGE 2: APROBACIÓN MANUAL (APPROVAL)
+  # STAGE 2: AUDITORIA 
+  # ==========================================
+  - stage: Auditoria
+    displayName: 'Análisis de auditoria'
+    dependsOn: CI
+    condition: succeeded()
+    jobs:
+      - job: security_check
+        displayName: 'Validar dependencias'
+        steps:
+          - script: |
+              chmod +x gradlew
+              ./gradlew dependencies
+            displayName: 'Revisar dependencias'
+  
+  # ==========================================
+  # STAGE 3: APROBACIÓN MANUAL (APPROVAL)
   # ==========================================
   - stage: Approval
     displayName: 'Aprobar'
@@ -104,7 +120,7 @@ stages:
               onTimeout: 'reject'
 
   # ==========================================
-  # STAGE 3: DESPLIEGUE CONTINUO (CD)
+  # STAGE 4: DESPLIEGUE CONTINUO (CD)
   # ==========================================
   - stage: CD
     displayName: 'CD'
@@ -146,7 +162,7 @@ stages:
             displayName: 'Descarga CLI, Login y Despliegue Docker'
 
   # ==========================================
-  # STAGE 4: NOTIFICACIONES (NOTIFICATIONS)
+  # STAGE 5: NOTIFICACIONES (NOTIFICATIONS)
   # ==========================================
   - stage: Notifications
     displayName: 'Notificar'
